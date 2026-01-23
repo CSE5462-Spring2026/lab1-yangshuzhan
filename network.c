@@ -1,10 +1,5 @@
-/*创建 UDP socket
-
-加入一个 multicast 地址（多播组）
-
-接收字符串消息
-
-把消息里的 key-value 拆出来并格式化打印*/
+/*Shuzhan Yang
+2026/1/23*/
 #include <string.h>
 #include <stdio.h>
 #include <sys/socket.h>
@@ -24,6 +19,31 @@ void format_message(char *buf) {
             *p = '\n';
         }
     }
+    printf("************************************************\n");
+    printf("%-20s %s\n", "Name", "Value");
+
+    char *line = buf;
+    while (*line) {
+        char *end = strchr(line, '\n');
+        if (end) *end = '\0';
+
+        char *colon = strchr(line, ':');
+        if (colon) {
+            *colon = '\0';
+            char *key = line;
+            char *value = colon + 1;
+
+            /* get rid value extra spaces */
+            while (*value == ' ') value++;
+
+            printf("%-20s %s\n", key, value);
+        }
+
+        if (!end) break;
+        line = end + 1;
+    }
+
+    printf("************************************************\n");
 }
 
 int main(){
@@ -62,7 +82,6 @@ int main(){
 
     buf[n] = 0; 
     format_message(buf);
-    printf("*****************\n %s\n", buf);
 }
 }
 
